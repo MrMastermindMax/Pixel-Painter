@@ -1,0 +1,374 @@
+import java.awt.Frame;
+import java.awt.BorderLayout;
+import controlP5.*;
+ControlP5 cp5;
+ControlFrame colorSlide;
+Tools tools;
+int Red = 0;
+int Green = 0;
+int Blue = 0;
+int Red1 = 0;
+int Green1 = 0;
+int Blue1 = 0;
+int Red2 = 0;
+int Green2 = 0;
+int Blue2 = 0;
+int color12;
+int state = 0;
+String shape="Pencil";
+int rmX, rmY, rX, rY;
+PImage back;
+int weight = 1;
+//color dropper = (0);
+boolean line = false;
+color color1=(0), color2=(255);//color1-stroke, color2-fill
+
+void setup() {
+  size(500, 500);
+  cp5 = new ControlP5(this);
+  colorSlide = addControlFrame("Color_Window", 400, 300, 1150, 10);
+  tools = addTools("Tools", 100, 400, 650, 500);
+  background(255);
+  rectMode(CORNERS);
+  ellipseMode(CORNERS);
+  shape="Pencil";
+  //background(Red, Green, Blue);
+}
+
+void draw() {
+  if (state==1) {
+    stroke(color1);
+    fill(color2);
+    strokeWeight(weight);
+    if (back==null && shape!="Pencil") 
+      background(15, 71, 209);
+    else if (shape=="Rectangle" || shape=="Ellipse" || shape=="Line") 
+      image(back, 0, 0);
+    if (shape=="Rectangle") 
+      rect(rmX, rmY, rX, rY);
+    else if (shape=="Ellipse") 
+      ellipse(rmX, rmY, rX, rY);
+    else if (shape=="Line") 
+      line(rmX, rmY, rX, rY);
+    else if (shape=="Pencil") {
+      if (mousePressed == true && mouseButton == LEFT) {
+        line(mouseX, mouseY, pmouseX, pmouseY);
+      }
+    }
+    else if (shape=="Dropper") {
+      if (mousePressed == true && mouseButton == LEFT) {
+        color1 = get(mouseX, mouseY);
+      }
+      else if (mousePressed == true && mouseButton == RIGHT) {
+        color2 = get(mouseX, mouseY);
+      }
+    }
+  }
+
+  if (mousePressed) {
+    if (state==0) {
+      rmX=mouseX;
+      rmY=mouseY;
+      state=1;
+    }
+    else if (state==1) {
+      rX=mouseX;
+      rY=mouseY;
+    }
+  }
+  if (keyPressed == true)
+    weight = key-48;
+}
+
+void mouseReleased() {
+  if (state==1) {
+    saveFrame("background.png");
+    back=loadImage("background.png");
+    rX=mouseX;
+    rY=mouseY;
+    state=0;
+  }
+}
+
+ControlFrame addControlFrame(String theName, int theWidth, int theHeight, int lX, int lY) {
+  Frame f = new Frame(theName);
+  ControlFrame p = new ControlFrame(this, theWidth, theHeight, lX, lY);
+  f.add(p);
+  p.init();
+  f.setTitle(theName);
+  f.setSize(p.w, p.h);
+  f.setLocation(lX, lY);
+  f.setResizable(false);
+  f.setVisible(true);
+  return p;
+}
+
+Tools addTools(String theName, int theWidth, int theHeight, int lX, int lY) {
+  Frame f = new Frame(theName);
+  Tools p = new Tools(this, theWidth, theHeight, lX, lY);
+  f.add(p);
+  p.init();
+  f.setTitle(theName);
+  f.setSize(p.w, p.h);
+  f.setLocation(lX, lY);
+  f.setResizable(false);
+  f.setVisible(true);
+  return p;
+}
+
+public class ControlFrame extends PApplet {
+  int w, h;
+
+  void setup() {
+    size(w, h);
+    cp5 = new ControlP5(this);
+
+    cp5.addSlider("Red")
+      .plugTo(parent, "Red")
+        .setPosition(20, 20)
+          .setSize(20, 200)
+            .setRange(0, 255)
+              ;
+
+    cp5.addSlider("Green")
+      .plugTo(parent, "Green")
+        .setPosition(70, 20)
+          .setSize(20, 200)
+            .setRange(0, 255)
+              ;
+
+    cp5.addSlider("Blue")
+      .plugTo(parent, "Blue")
+        .setPosition(120, 20)
+          .setSize(20, 200)
+            .setRange(0, 255)
+              ;
+  }
+
+  void draw() {
+    background(180);
+    textAlign(CENTER);
+
+    if (color12 == 1 && shape!="dropper") {
+      Red1 = Red;
+      Green1 = Green;
+      Blue1 = Blue;
+      color1 = color(Red, Green, Blue);
+      color2 = color2;
+    }
+
+    if (color12 == 2 && shape!="dropper") {
+      Red2 = Red;
+      Green2 = Green;
+      Blue2 = Blue;
+      color2 = color(Red, Green, Blue);
+      color1 = color1;
+    }
+
+    fill(color1);
+    rect(170, 20, 70, 70);
+    fill(0);
+    text("Color 1", 205, 105);
+
+    fill(color2);
+    rect(290, 20, 70, 70);
+    fill(0);
+    text("Color 2", 325, 105);
+    
+    fill(0);
+    rect(170, 150, 30, 30);
+    
+    fill(255);
+    rect(215, 150, 30, 30);
+    
+    fill(127);
+    rect(260, 150, 30, 30);
+    
+    fill(237, 28, 36);
+    rect(305, 150, 30, 30);
+    
+    fill(34, 177, 76);
+    rect(350, 150, 30, 30);
+    
+    fill(63, 72, 204);
+    rect(170, 195, 30, 30);
+    
+    fill(255, 137, 39);
+    rect(215, 195, 30, 30);
+    
+    fill(163, 73, 164);
+    rect(260, 195, 30, 30);
+    
+    fill(185, 122, 87);
+    rect(305, 195, 30, 30);
+    
+    fill(255, 242, 0);
+    rect(350, 195, 30, 30);
+  }
+
+  void mousePressed() {
+    if (mouseX < 240 && mouseX > 170 && mouseY < 90 && mouseY > 20) {
+      color12 = 1;
+      Red = Red1;
+      Green = Green1;
+      Blue = Blue1;
+    }
+
+    else if (mouseX < 360 && mouseX > 290 && mouseY < 90 && mouseY > 20) {
+      color12 = 2;
+      Red = Red2;
+      Green = Green2;
+      Blue = Blue2;
+    }
+    
+    else if (mouseX < 200 && mouseX > 170 && mouseY < 180 && mouseY > 150){
+      Red = 0;
+      Green = 0;
+      Blue = 0;
+    }
+    
+    else if (mouseX < 245 && mouseX > 215 && mouseY < 180 && mouseY > 150){
+      Red = 255;
+      Green = 255;
+      Blue = 255;
+    }
+    
+    else if (mouseX < 290 && mouseX > 260 && mouseY < 180 && mouseY > 150){
+      Red = 127;
+      Green = 127;
+      Blue = 127;
+    }
+    
+    else if (mouseX < 335 && mouseX > 305 && mouseY < 180 && mouseY > 150){
+      Red = 237;
+      Green = 28;
+      Blue = 36;
+    }
+    
+    else if (mouseX < 380 && mouseX > 350 && mouseY < 180 && mouseY > 150){
+      Red = 34;
+      Green = 177;
+      Blue = 76;
+    }
+    
+    else if (mouseX < 200 && mouseX > 170 && mouseY < 225 && mouseY > 195){
+      Red = 63;
+      Green = 72;
+      Blue = 204;
+    }
+    
+    else if (mouseX < 245 && mouseX > 215 && mouseY < 225 && mouseY > 195){
+      Red = 255;
+      Green = 137;
+      Blue = 39;
+    }
+    
+    else if (mouseX < 290 && mouseX > 260 && mouseY < 225 && mouseY > 195){
+      Red = 163;
+      Green = 73;
+      Blue = 164;
+    }
+    
+    else if (mouseX < 335 && mouseX > 305 && mouseY < 225 && mouseY > 195){
+      Red = 185;
+      Green = 122;
+      Blue = 87;
+    }
+    
+    else if (mouseX < 380 && mouseX > 350 && mouseY < 225 && mouseY > 195){
+      Red = 255;
+      Green = 242;
+      Blue = 0;
+    }
+  }
+
+
+  public ControlFrame(Object theParent, int theWidth, int theHeight, int lX, int lY) {
+    parent = theParent;
+    w = theWidth;
+    h = theHeight;
+  }
+
+  public ControlP5 control() {
+    return cp5;
+  }
+
+  ControlP5 cp5;
+
+  Object parent;
+}
+
+public class Tools extends PApplet {
+  int w, h;
+  void setup() {
+    size(w, h);
+    noStroke();
+    cp5 = new ControlP5(this);
+    cp5.addButton("Pencil")
+      .setValue(0)
+        .setPosition(25, 20)
+          .setSize(50, 50)
+            ;
+
+    cp5.addButton("Rectangle")
+      .setValue(0)
+        .setPosition(25, 90)
+          .setSize(50, 50)
+            ;
+
+    cp5.addButton("Ellipse")
+      .setValue(0)
+        .setPosition(25, 160)
+          .setSize(50, 50)
+            ;
+
+    cp5.addButton("Line")
+      .setValue(0)
+        .setPosition(25, 230)
+          .setSize(50, 50)
+            ;
+
+    cp5.addButton("Dropper")
+      .setValue(0)
+        .setPosition(25, 300)
+          .setSize(50, 50)
+            ;
+  }
+
+  void draw() {
+    background(200);
+  }
+
+  public Tools(Object theParent, int theWidth, int theHeight, int lX, int lY) {
+    parent = theParent;
+    w = theWidth;
+    h = theHeight;
+  }
+
+  public ControlP5 control() {
+    return cp5;
+  }
+
+  public void Pencil() {
+    shape="Pencil";
+  }
+
+  public void Rectangle() {
+    shape="Rectangle";
+  }
+
+  public void Ellipse() {
+    shape="Ellipse";
+  }
+
+  public void Line() {
+    shape="Line";
+  }
+
+  public void Dropper() {
+    shape="Dropper";
+  }
+
+  ControlP5 cp5;
+  Object parent;
+}
